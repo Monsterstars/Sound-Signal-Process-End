@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jlw.ssp.dao.DataDao">
+
+    <resultMap id="data" type="com.jlw.ssp.entity.Feature">
+        <result column="id" property="featureId"></result>
+        <result column="text" property="text"></result>
+        <result column="pinyin" property="pinyin"></result>
+        <result column="user_name" property="userName"></result>
+        <result column="accuracy_score" property="score.accuracyScore"></result>
+        <result column="emotion_score" property="score.emotionScore"></result>
+        <result column="fluency_score" property="score.fluencyScore"></result>
+        <result column="total_score" property="score.totalScore"></result>
+    </resultMap>
+
+    <insert id="insertData" parameterType="com.jlw.ssp.pojo.Data">
+        insert into
+        tbl_jiangjiang(
+        id,
+        user_name,
+        accuracy_score,
+        emotion_score,
+        fluency_score,
+        total_score,
+        text,
+        pinyin
+        )
+        values (
+        #{id},
+        #{userName},
+        #{accuracyScore},
+        #{emotionScore},
+        #{fluencyScore},
+        #{totalScore},
+        #{text},
+        #{pinyin}
+        )
+    </insert>
+
+    <update id="updateData">
+        UPDATE
+        tbl_jiangjiang
+        SET
+        user_name = #{newUserName}
+        WHERE
+        user_name = #{oldUserName}
+    </update>
+
+    <select id="getDataByUserName" resultMap="data">
+        SELECT
+        *
+        FROM
+        tbl_jiangjiang
+        WHERE
+        user_name = #{userName}
+    </select>
+
+    <select id="getUserNameByFeatureId" resultType="java.lang.String">
+        SELECT
+        user_name
+        FROM
+        tbl_jiangjiang
+        WHERE
+        id = #{featureId}
+        LIMIT
+        1
+    </select>
+
+</mapper>

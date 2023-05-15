@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration scan="true" scanPeriod="30 seconds" debug="true">
+
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+
+    <!-- 获取日志文件的输出路径 -->
+    <springProperty scope="context" name="LOG_PATH" source="logging.file.path"/>
+
+    <!-- 获取该应用的名称 -->
+    <springProperty scope="context" name="APPLICATION_NAME" source="spring.application.name"/>
+
+    <!-- 定义日志输出格式和颜色 -->
+    <property name="LOG_FORMAT_ONE" value="%red(%d{yyyy-MM-dd HH:mm:ss.SSS}) %green([%thread]) %blue([%-5level]) %cyan(%logger{36}:%line) %msg%n" />
+    <property name="LOG_FORMAT_TWO" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%-5level] %logger{36}:%line %msg%n" />
+
+    <!--输出到控制台-->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- 日志输出编码格式化 -->
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>${LOG_FORMAT_ONE}</Pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <!-- 过滤器，此过滤器低于阈值的不再显示 -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>info</level>
+        </filter>
+    </appender>
+
+    <!-- 日志持久化 -->
+    <appender name="FILE_INFO" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 输出的日志远程，当天的日志名称 -->
+        <file>${LOG_PATH}/${APPLICATION_NAME}/${APPLICATION_NAME}-today.log</file>
+        <!-- 策略配置 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- 保存归纳的日志 -->
+            <fileNamePattern>${LOG_PATH}/${APPLICATION_NAME}/%d{yyyy-MM-dd}/log-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <!-- 日志保存的天数 -->
+            <maxHistory>180</maxHistory>
+            <!-- 最大文件容量 -->
+            <maxFileSize>10MB</maxFileSize>
+            <!-- 总容量 -->
+            <totalSizeCap>10GB</totalSizeCap>
+        </rollingPolicy>
+        <!-- 日志输出编码格式化 -->
+        <encoder>
+            <pattern>${LOG_FORMAT_TWO}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="FILE_INFO" />
+    </root>
+
+</configuration>
